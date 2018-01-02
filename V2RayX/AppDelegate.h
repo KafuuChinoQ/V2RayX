@@ -63,6 +63,7 @@ typedef enum ProxyMode : NSInteger{
 - (IBAction)viewLog:(id)sender;
 
 - (void)configurationDidChange;
+- (void)saveSettings;
 - (NSString*)logDirPath;
 
 @property (strong, nonatomic)  NSStatusItem *statusBarItem;

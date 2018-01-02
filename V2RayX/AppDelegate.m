@@ -120,14 +120,7 @@ static AppDelegate *appDelegate;
     return [NSData dataWithContentsOfFile:pacPath];
 }
 
-- (void)applicationWillTerminate:(NSNotification *)aNotification {
-    //stop monitor pac
-    dispatch_source_cancel(dispatchPacSource);
-    //unload v2ray
-    runCommandLine(@"/bin/launchctl", @[@"unload", plistPath]);
-    NSLog(@"V2RayX quiting, V2Ray core unloaded.");
-    //remove log file
-    [[NSFileManager defaultManager] removeItemAtPath:logDirPath error:nil];
+- (void)saveSettings {
     //save settings
     //[[NSUserDefaults standardUserDefaults] setObject:dnsString forKey:@"dnsString"];
     NSMutableArray* profilesArray = [[NSMutableArray alloc] init];
@@ -151,6 +144,17 @@ static AppDelegate *appDelegate;
         [[NSUserDefaults standardUserDefaults] setObject:settings[key] forKey:key];
     }
     NSLog(@"Settings saved.");
+}
+
+- (void)applicationWillTerminate:(NSNotification *)aNotification {
+    //stop monitor pac
+    dispatch_source_cancel(dispatchPacSource);
+    //unload v2ray
+    runCommandLine(@"/bin/launchctl", @[@"unload", plistPath]);
+    NSLog(@"V2RayX quiting, V2Ray core unloaded.");
+    //remove log file
+    [[NSFileManager defaultManager] removeItemAtPath:logDirPath error:nil];
+    [self saveSettings];
     //turn off proxy
     if (proxyState && proxyMode != 3) {
         proxyState = NO;

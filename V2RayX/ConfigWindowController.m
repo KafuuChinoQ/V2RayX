@@ -98,6 +98,7 @@
     appDelegate.dnsString = dnsStr;
     appDelegate.logLevel = _logLevelButton.selectedItem.title;
     appDelegate.selectedServerIndex = _selectedServerIndex;
+    [appDelegate saveSettings];
     [appDelegate configurationDidChange];
     [[self window] close];
 }
@@ -145,11 +146,10 @@
     NSString *savedWsPath = transportSettings[@"wsSettings"][@"path"];
     [_wsPathField setStringValue: savedWsPath != nil ? savedWsPath : @""];
     //tls
-    [_tlsUseButton setState:[[[NSUserDefaults standardUserDefaults] objectForKey:@"useTLS"] boolValue]];
-    NSDictionary* tlsSettings = [[NSUserDefaults standardUserDefaults] objectForKey:@"tlsSettings"];
-    [_tlsAiButton setState:[tlsSettings[@"allowInsecure"] boolValue]];
-    if (tlsSettings[@"serverName"]) {
-        [_tlsSnField setStringValue:tlsSettings[@"serverName"]];
+    [_tlsUseButton setState:![transportSettings[@"security"] isEqual: @"none"]];
+    [_tlsAiButton setState:[transportSettings[@"tlsSettings"][@"allowInsecure"] boolValue]];
+    if (transportSettings[@"tlsSettings"][@"serverName"]) {
+        [_tlsSnField setStringValue:transportSettings[@"tlsSettings"][@"serverName"]];
     }
     [self useTLS:nil];
     // mux
